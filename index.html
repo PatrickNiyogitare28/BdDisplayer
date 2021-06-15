@@ -29,6 +29,7 @@
 </head>
 
 <body>
+  <canvas id="birthday"></canvas>
     <div class="container">
         <div class="balloon">
             <div><span>☺</span>
@@ -41,62 +42,8 @@
             </div>
             <div><span>Y</span>
             </div>
-            </div>
         </div>
         <h1>Stanley</h1>
-        <div class="important-messages">
-            <h3 class="text-center text-light">Important messages</h3>
-            <div class="card-group">
-            <div class="card mb-3" style="max-width: 800px;">
-                <div class="row g-0">
-                  <div class="col-md-4">
-                    <img src="https://st2.depositphotos.com/1007034/6590/i/600/depositphotos_65903213-stock-photo-its-a-boy.jpg" alt="...">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title text-italic text-capitalize">It's a Dev 😍!!!!!!!!!!!!!</h5>
-                      <p class="card-text font-weight-light"><blockquote>Twinkle, twinkle, little star ........ 🎉🎉🎉🎉..... Wishing you a very Happy day, and may your birthday brings you much happiness as you give to everyone who knows you!. Happy birthdayyyyyyy!</blockquote></p>
-                      <p class="card-text"><small class="text-muted">Class B</small></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- anyone plz add ur wish here -->
-              <!-- <div class="card mb-3" style="max-width: 800px; margin-left: 1em;">
-                <div class="row g-0">
-                  <div class="col-md-4">
-                    <img src="images/depositphotos_78789940-Its-a-Boy-Blue-Baby-Shower-Cupcakes-removebg-preview.png" alt="...">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">Happy birthday!!!</h5>
-                      <p class="card-text">Sorry I am late. I spent a lot of time deciding whether to send you a handwritten letter✍
-                        email 💌, voice message 🔊, Facebook message 📷:, tweet, SMS 📩, or video message.
-                        I could not decide in time ⏰:. So happy belated birthday 🎈🎉!</p>
-                      <p class="card-text"><small class="text-muted">Stecie</small></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>  -->
-
-              
-     <!-- <embed src="https://soundcloud.com/sauve-jean-luc/afro-remix-happy-birthday" 
-       align="baseline" border="0" width="145" 
-       height="60" autostart="true" loop="true"> -->
-
-  <!-- <embed src="https://soundcloud.com/sauve-jean-luc/afro-remix-happy-birthday" loop="true" autostart="true" width="2" height="0"> --> -->
-
-            <div class="mb-3 mt-3" style="width: 100%;">
-              <img style="max-width: 40%;" src="./assets/images/oreste's-message.jpg">  
-              </div>
-
-            <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1061135455&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/sauve-jean-luc" title="SAUVÉ Jean-Luc" target="_blank" style="color: #cccccc; text-decoration: none;">SAUVÉ Jean-Luc</a> · <a href="https://soundcloud.com/sauve-jean-luc/afro-remix-happy-birthday" title="Afro Remix  Happy Birthday" target="_blank" style="color: #cccccc; text-decoration: none;">Afro Remix  Happy Birthday</a></div>
-
-            </div>
-        </div>
-        <!-- <h6 style="color:#F0FFFF">Dvlpd by @sauvejeanluc with ❤</h6> -->
     </div>
     <script>
 
@@ -105,6 +52,163 @@
         if (document.location.search.match(/type=embed/gi)) {
             window.parent.postMessage('resize', "*");
         }
+        const PI2 = Math.PI * 2
+const random = (min, max) => Math.random() * (max - min + 1) + min | 0
+const timestamp = _ => new Date().getTime()
+
+// container
+class Birthday {
+  constructor() {
+    this.resize()
+
+    // create a lovely place to store the firework
+    this.fireworks = []
+    this.counter = 0
+
+  }
+  
+  resize() {
+    this.width = canvas.width = window.innerWidth
+    let center = this.width / 2 | 0
+    this.spawnA = center - center / 4 | 0
+    this.spawnB = center + center / 4 | 0
+    
+    this.height = canvas.height = window.innerHeight
+    this.spawnC = this.height * .1
+    this.spawnD = this.height * .5
+    
+  }
+  
+  onClick(evt) {
+     let x = evt.clientX || evt.touches && evt.touches[0].pageX
+     let y = evt.clientY || evt.touches && evt.touches[0].pageY
+     
+     let count = random(3,5)
+     for(let i = 0; i < count; i++) this.fireworks.push(new Firework(
+        random(this.spawnA, this.spawnB),
+        this.height,
+        x,
+        y,
+        random(0, 260),
+        random(30, 110)))
+          
+     this.counter = -1
+     
+  }
+  
+  update(delta) {
+    ctx.globalCompositeOperation = 'hard-light'
+    ctx.fillStyle = `rgba(20,20,20,${ 7 * delta })`
+    ctx.fillRect(0, 0, this.width, this.height)
+
+    ctx.globalCompositeOperation = 'lighter'
+    for (let firework of this.fireworks) firework.update(delta)
+
+    // if enough time passed... create new new firework
+    this.counter += delta * 3 // each second
+    if (this.counter >= 1) {
+      this.fireworks.push(new Firework(
+        random(this.spawnA, this.spawnB),
+        this.height,
+        random(0, this.width),
+        random(this.spawnC, this.spawnD),
+        random(0, 360),
+        random(30, 110)))
+      this.counter = 0
+    }
+
+    // remove the dead fireworks
+    if (this.fireworks.length > 1000) this.fireworks = this.fireworks.filter(firework => !firework.dead)
+
+  }
+}
+
+class Firework {
+  constructor(x, y, targetX, targetY, shade, offsprings) {
+    this.dead = false
+    this.offsprings = offsprings
+
+    this.x = x
+    this.y = y
+    this.targetX = targetX
+    this.targetY = targetY
+
+    this.shade = shade
+    this.history = []
+  }
+  update(delta) {
+    if (this.dead) return
+
+    let xDiff = this.targetX - this.x
+    let yDiff = this.targetY - this.y
+    if (Math.abs(xDiff) > 3 || Math.abs(yDiff) > 3) { // is still moving
+      this.x += xDiff * 2 * delta
+      this.y += yDiff * 2 * delta
+
+      this.history.push({
+        x: this.x,
+        y: this.y
+      })
+
+      if (this.history.length > 20) this.history.shift()
+
+    } else {
+      if (this.offsprings && !this.madeChilds) {
+        
+        let babies = this.offsprings / 2
+        for (let i = 0; i < babies; i++) {
+          let targetX = this.x + this.offsprings * Math.cos(PI2 * i / babies) | 0
+          let targetY = this.y + this.offsprings * Math.sin(PI2 * i / babies) | 0
+
+          birthday.fireworks.push(new Firework(this.x, this.y, targetX, targetY, this.shade, 0))
+
+        }
+
+      }
+      this.madeChilds = true
+      this.history.shift()
+    }
+    
+    if (this.history.length === 0) this.dead = true
+    else if (this.offsprings) { 
+        for (let i = 0; this.history.length > i; i++) {
+          let point = this.history[i]
+          ctx.beginPath()
+          ctx.fillStyle = 'hsl(' + this.shade + ',100%,' + i + '%)'
+          ctx.arc(point.x, point.y, 1, 0, PI2, false)
+          ctx.fill()
+        } 
+      } else {
+      ctx.beginPath()
+      ctx.fillStyle = 'hsl(' + this.shade + ',100%,50%)'
+      ctx.arc(this.x, this.y, 1, 0, PI2, false)
+      ctx.fill()
+    }
+
+  }
+}
+
+let canvas = document.getElementById('birthday')
+let ctx = canvas.getContext('2d')
+
+let then = timestamp()
+
+let birthday = new Birthday
+window.onresize = () => birthday.resize()
+document.onclick = evt => birthday.onClick(evt)
+document.ontouchstart = evt => birthday.onClick(evt)
+
+  ;(function loop(){
+  	requestAnimationFrame(loop)
+
+  	let now = timestamp()
+  	let delta = now - then
+
+    then = now
+    birthday.update(delta / 1000)
+  	
+
+  })()
     </script>
 
 

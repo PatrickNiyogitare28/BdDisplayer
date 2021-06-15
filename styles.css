@@ -17,11 +17,14 @@ span {
 }
 
 .container {
-    width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
     height: 420px;
-    padding: 10px;
-    margin: 0 auto;
-    position: relative;
+    top: 0px;
+    position: absolute;
 }
 
 .balloon {
@@ -30,6 +33,9 @@ span {
     padding-top: 30px;
     position: relative;
 }
+canvas{
+    width: 100%;
+    display:block}
 
 .balloon>div {
     width: 104px;
